@@ -2,7 +2,7 @@
 resource "aws_launch_template" "ecs" {
   name_prefix   = "${var.environment_name}-${var.service_name}-ecs"
   image_id      = data.aws_ami.ecs_optimized.id
-  instance_type = "t3.large"  # Adjust based on your needs (t3.small has 2 vCPU, 2GB RAM)
+  instance_type = "t3.medium"  # Adjust based on your needs (t3.small has 2 vCPU, 2GB RAM)
 
   user_data = base64encode(<<-EOF
     #!/bin/bash
