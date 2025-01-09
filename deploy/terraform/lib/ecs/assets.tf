@@ -1,6 +1,9 @@
 module "assets_service" {
   source = "./service"
 
+  datadog_api_key = var.datadog_api_key
+  datadog_site    = var.datadog_site
+
   environment_name                = var.environment_name
   service_name                    = "assets"
   cluster_arn                     = aws_ecs_cluster.cluster.arn
