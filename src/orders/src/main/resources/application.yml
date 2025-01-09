@@ -17,6 +17,11 @@ spring.autoconfigure.exclude:
 server:
   port: ${port:8080}
 
+datadog:
+  statsd:
+    host: ${DATADOG_AGENT_HOST:localhost}  # When running as ECS sidecar, Datadog agent is accessible at localhost
+    port: ${DATADOG_AGENT_PORT:8125}       # Default StatsD port used by Datadog agent
+
 spring.flyway.baseline-on-migrate: true
 
 retail:

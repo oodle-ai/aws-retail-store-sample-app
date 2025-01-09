@@ -4,7 +4,7 @@ This Terraform module creates all the necessary infrastructure and deploys the r
 
 It provides:
 - VPC with public and private subnets
-- ECS cluster using Fargate for compute
+- ECS cluster using EC2 for compute
 - All application dependencies such as RDS, DynamoDB table, Elasticache etc.
 - Deployment of application components as ECS services
 - ECS Service Connect to handle traffic between services
