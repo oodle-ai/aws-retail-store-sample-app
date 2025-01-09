@@ -30,6 +30,9 @@ module "dependencies" {
 module "retail_app_ecs" {
   source = "../../lib/ecs"
 
+  datadog_api_key = var.datadog_api_key
+  datadog_site    = var.datadog_site
+
   environment_name          = var.environment_name
   vpc_id                    = module.vpc.inner.vpc_id
   vpc_cidr                  = module.vpc.inner.vpc_cidr_block
