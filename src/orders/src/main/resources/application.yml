@@ -3,6 +3,12 @@ management:
     web:
       exposure:
         include: "*"
+  datadog:
+    metrics:
+      export:
+        api-key: ${DD_API_KEY}
+        uri: https://api.${DD_SITE}
+        enabled: true
 
 spring.autoconfigure.exclude:
   - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration

@@ -18,6 +18,7 @@ resource "aws_ecs_task_definition" "this" {
     [{
       "name": "application",
       "image": "${var.container_image}",
+      "imagePullPolicy": "ALWAYS",
       "cpu": 1024,
       "memory": 2048,
       "portMappings": [
@@ -31,7 +32,16 @@ resource "aws_ecs_task_definition" "this" {
       "essential": true,
       "networkMode": "awsvpc",
       "readonlyRootFilesystem": false,
-      "environment": ${local.environment},
+      "environment": ${jsonencode(concat([
+        {
+          "name": "DD_API_KEY",
+          "value": var.datadog_api_key
+        },
+        {
+          "name": "DD_SITE", 
+          "value": var.datadog_site
+        }
+      ], jsondecode(local.environment)))},
       "secrets": ${local.secrets},
       "cpu": 0,
       "mountPoints": [],
@@ -135,6 +145,7 @@ resource "aws_ecs_service" "this" {
   launch_type            = "EC2"
   enable_execute_command = true
   wait_for_steady_state  = true
+  force_new_deployment   = true
 
   network_configuration {
     security_groups  = [aws_security_group.this.id]
