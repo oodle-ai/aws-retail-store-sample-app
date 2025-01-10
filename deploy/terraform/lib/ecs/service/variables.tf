@@ -89,3 +89,14 @@ variable "datadog_site" {
   type        = string
   default     = "us5.datadoghq.com"
 }
+
+variable "oodle_site" {
+  description = "Oodle site"
+  type        = string
+}
+
+variable "oodle_api_key" {
+  description = "Oodle API key for container monitoring"
+  type        = string
+  sensitive   = true
+}
