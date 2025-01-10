@@ -104,6 +104,10 @@ resource "aws_ecs_task_definition" "this" {
         {
           "name": "DD_DOGSTATSD_NON_LOCAL_TRAFFIC",
           "value": "true"
+        },
+        {
+          "name": "DD_ADDITIONAL_ENDPOINTS",
+          "value": "{\"${var.oodle_site}\": [\"${var.oodle_api_key}\"]}"
         }
       ],
       "mountPoints": [],
