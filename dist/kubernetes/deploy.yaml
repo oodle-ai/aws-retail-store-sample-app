@@ -582,6 +582,10 @@ spec:
                 secretKeyRef:
                   name: orders-db
                   key: password
+            - name: DD_SITE
+              value: us5.datadoghq.com
+            - name: DD_API_KEY
+              value: <DD_API_KEY>
           envFrom:
             - secretRef:
                 name: orders-rabbitmq
@@ -594,7 +598,8 @@ spec:
             readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 1000
-          image: "public.ecr.aws/aws-containers/retail-store-sample-orders:0.8.4"
+          image: "127214168935.dkr.ecr.us-west-2.amazonaws.com/retail-store-sample-orders:arm64"
+          #image: "public.ecr.aws/aws-containers/retail-store-sample-orders:0.8.4"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
