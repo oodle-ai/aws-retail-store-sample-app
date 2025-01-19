@@ -69,4 +69,4 @@ COPY --chown=appuser:appuser --from=build-env /app.jar .
 
 EXPOSE 8080
 
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar /app/app.jar"]
+ENTRYPOINT ["sh", "-c", "export DATADOG_AGENT_HOST=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4) && java $JAVA_OPTS -jar /app/app.jar"]

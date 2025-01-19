@@ -25,8 +25,10 @@ import com.timgroup.statsd.StatsDClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
+@Slf4j
 public class OrdersMetricsStatsD {
     private final StatsDClient statsd;
 
@@ -34,6 +36,8 @@ public class OrdersMetricsStatsD {
             @Value("${datadog.statsd.host:localhost}") String host,
             @Value("${datadog.statsd.port:8125}") int port,
             @Value("${spring.application.name:orders-service}") String prefix) {
+        
+        log.info("Initializing StatsD client with host: {}, port: {}, prefix: {}", host, port, prefix);
         
         this.statsd = new NonBlockingStatsDClientBuilder()
             .prefix(prefix)

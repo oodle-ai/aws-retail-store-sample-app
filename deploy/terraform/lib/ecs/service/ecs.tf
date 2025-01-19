@@ -61,77 +61,6 @@ resource "aws_ecs_task_definition" "this" {
           "awslogs-stream-prefix": "${var.service_name}-service"
         }
       }
-    },
-    {
-      "name": "datadog-agent",
-      "image": "public.ecr.aws/datadog/agent:latest",
-      "cpu": 100,
-      "memory": 256,
-      "essential": true,
-      "environment": [
-        {
-          "name": "DD_APM_ENABLED",
-          "value": "false"
-        },
-        {
-          "name": "DD_APM_NON_LOCAL_TRAFFIC",
-          "value": "false"
-        },
-        {
-          "name": "DD_LOGS_ENABLED",
-          "value": "false"
-        },
-        {
-          "name": "DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL",
-          "value": "false"
-        },
-        {
-          "name": "DD_CONTAINER_EXCLUDE",
-          "value": "name:datadog-agent"
-        },
-        {
-          "name": "ECS_FARGATE",
-          "value": "false"
-        },
-        {
-          "name": "DD_API_KEY",
-          "value": "${var.datadog_api_key}"
-        },
-        {
-          "name": "DD_SITE",
-          "value": "${var.datadog_site}"
-        },
-        {
-          "name": "DD_DOGSTATSD_NON_LOCAL_TRAFFIC",
-          "value": "true"
-        },
-        {
-          "name": "DD_ADDITIONAL_ENDPOINTS",
-          "value": "{\"${var.oodle_site}\": [\"${var.oodle_api_key}\"]}"
-        }
-      ],
-      "mountPoints": [],
-      "volumesFrom": [],
-      "portMappings": [
-        {
-          "containerPort": 8126,
-          "hostPort": 8126,
-          "protocol": "tcp"
-        },
-        {
-          "containerPort": 8125,
-          "hostPort": 8125,
-          "protocol": "udp"
-        }
-      ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "${var.cloudwatch_logs_group_id}",
-          "awslogs-region": "${data.aws_region.current.name}",
-          "awslogs-stream-prefix": "${var.service_name}-datadog"
-        }
-      } 
     }
   ]
   DEFINITION
@@ -150,6 +79,7 @@ resource "aws_ecs_service" "this" {
   enable_execute_command = true
   wait_for_steady_state  = true
   force_new_deployment   = true
+  deployment_minimum_healthy_percent = 0
 
   network_configuration {
     security_groups  = [aws_security_group.this.id]
