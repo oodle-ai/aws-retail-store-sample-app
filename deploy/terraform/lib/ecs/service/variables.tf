@@ -40,10 +40,6 @@ variable "container_image" {
   description = "Container image for the service"
 }
 
-variable "service_discovery_namespace_arn" {
-  description = "ARN of the service discovery namespace for Service Connect"
-}
-
 variable "environment_variables" {
   description = "Map of environment variables for the ECS task"
   default     = {}
@@ -99,4 +95,9 @@ variable "oodle_api_key" {
   description = "Oodle API key for container monitoring"
   type        = string
   sensitive   = true
+}
+
+variable "route53_zone_id" {
+  description = "The ID of the Route53 hosted zone where DNS records will be created"
+  type        = string
 }

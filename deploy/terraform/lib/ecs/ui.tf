@@ -15,16 +15,16 @@ module "ui_service" {
   public_subnet_ids               = var.public_subnet_ids
   tags                            = var.tags
   container_image                 = module.container_images.result.ui.url
-  service_discovery_namespace_arn = aws_service_discovery_private_dns_namespace.this.arn
   cloudwatch_logs_group_id        = aws_cloudwatch_log_group.ecs_tasks.id
   healthcheck_path                = "/actuator/health"
   alb_target_group_arn            = element(module.alb.target_group_arns, 0)
+  route53_zone_id                 = aws_route53_zone.private.zone_id
 
   environment_variables = {
-    ENDPOINTS_CATALOG  = "http://${module.catalog_service.ecs_service_name}"
-    ENDPOINTS_CARTS    = "http://${module.carts_service.ecs_service_name}"
-    ENDPOINTS_CHECKOUT = "http://${module.checkout_service.ecs_service_name}"
-    ENDPOINTS_ORDERS   = "http://${module.orders_service.ecs_service_name}"
-    ENDPOINTS_ASSETS   = "http://${module.assets_service.ecs_service_name}"
+    ENDPOINTS_CATALOG  = "http://${module.catalog_service.ecs_service_name}.retailstore.local"
+    ENDPOINTS_CARTS    = "http://${module.carts_service.ecs_service_name}.retailstore.local"
+    ENDPOINTS_CHECKOUT = "http://${module.checkout_service.ecs_service_name}.retailstore.local"
+    ENDPOINTS_ORDERS   = "http://${module.orders_service.ecs_service_name}.retailstore.local"
+    ENDPOINTS_ASSETS   = "http://${module.assets_service.ecs_service_name}.retailstore.local"
   }
 }
