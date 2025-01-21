@@ -1,6 +1,6 @@
 locals {
   mq_default_user            = "default_mq_user"
-  allowed_security_group_ids = concat(var.allowed_security_group_ids, [var.orders_security_group_id])
+  allowed_security_group_ids = concat(var.allowed_security_group_ids, [var.orders_security_group_id, var.ecs_instance_security_group_id])
 }
 
 resource "random_password" "mq_password" {

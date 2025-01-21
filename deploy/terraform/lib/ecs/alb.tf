@@ -35,10 +35,10 @@ module "alb" {
 
   target_groups = [
     {
-      name                 = "ui-application"
+      name                 = "${var.environment_name}-ui-application"
       backend_protocol     = "HTTP"
       backend_port         = 8080
-      target_type          = "ip"
+      target_type          = "instance"
       deregistration_delay = 30
       health_check = {
         enabled             = true

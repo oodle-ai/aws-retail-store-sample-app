@@ -15,9 +15,9 @@ module "orders_service" {
   public_subnet_ids               = var.public_subnet_ids
   tags                            = var.tags
   container_image                 = module.container_images.result.orders.url
-  service_discovery_namespace_arn = aws_service_discovery_private_dns_namespace.this.arn
   cloudwatch_logs_group_id        = aws_cloudwatch_log_group.ecs_tasks.id
   healthcheck_path                = "/actuator/health"
+  route53_zone_id                 = aws_route53_zone.private.zone_id
 
   environment_variables = {
     RETAIL_ORDERS_MESSAGING_PROVIDER = "rabbitmq"

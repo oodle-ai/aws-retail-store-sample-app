@@ -25,6 +25,7 @@ module "dependencies" {
   catalog_security_group_id  = module.retail_app_ecs.catalog_security_group_id
   orders_security_group_id   = module.retail_app_ecs.orders_security_group_id
   checkout_security_group_id = module.retail_app_ecs.checkout_security_group_id
+  ecs_instance_security_group_id = module.retail_app_ecs.ecs_instance_security_group_id
 }
 
 module "retail_app_ecs" {

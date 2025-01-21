@@ -15,9 +15,9 @@ module "catalog_service" {
   public_subnet_ids               = var.public_subnet_ids
   tags                            = var.tags
   container_image                 = module.container_images.result.catalog.url
-  service_discovery_namespace_arn = aws_service_discovery_private_dns_namespace.this.arn
   cloudwatch_logs_group_id        = aws_cloudwatch_log_group.ecs_tasks.id
-
+  route53_zone_id                 = aws_route53_zone.private.zone_id
+  
   environment_variables = {
     DB_NAME = var.catalog_db_name
   }
