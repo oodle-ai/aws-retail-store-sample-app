@@ -59,8 +59,8 @@ resource "aws_ecs_task_definition" "datadog_agent" {
         }
       ]
 
-      cpu         = 256
-      memory      = 512
+      cpu         = 100
+      memory      = 256
       essential   = true
 
       logConfiguration = {

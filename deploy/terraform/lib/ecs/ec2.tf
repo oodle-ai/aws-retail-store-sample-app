@@ -3,7 +3,7 @@ resource "aws_launch_template" "ecs" {
   name_prefix = "${var.environment_name}-ecs"
   image_id    = data.aws_ami.ecs_optimized.id
 
-  instance_type = "t3.medium"
+  instance_type = "t3.2xlarge"
 
   user_data = base64encode(<<-EOF
               #!/bin/bash
@@ -33,8 +33,8 @@ resource "aws_autoscaling_group" "ecs" {
   name                = "${var.environment_name}-ecs-asg"
   vpc_zone_identifier = var.subnet_ids
   health_check_type   = "EC2"
-  desired_capacity    = 6
-  max_size            = 6
+  desired_capacity    = 7
+  max_size            = 8
   min_size            = 1
 
   launch_template {
