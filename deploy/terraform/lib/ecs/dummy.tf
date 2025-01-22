@@ -42,6 +42,9 @@ resource "aws_ecs_service" "dummy" {
   cluster         = aws_ecs_cluster.cluster.arn
   task_definition = aws_ecs_task_definition.dummy.arn
   desired_count   = 200
+
+  deployment_maximum_percent         = 100
+  deployment_minimum_healthy_percent = 0
 }
 
 resource "aws_security_group" "dummy" {
