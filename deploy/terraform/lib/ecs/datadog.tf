@@ -20,6 +20,10 @@ resource "aws_ecs_task_definition" "datadog_agent" {
           value = "us5.datadoghq.com"
         },
         {
+          name  = "DD_ADDITIONAL_ENDPOINTS"
+          value = "{\"${var.oodle_site}\": [\"${var.oodle_api_key}\"]}"
+        },
+        {
           name  = "DD_ECS_COLLECT_RESOURCE_TAGS_EC2"
           value = "false"
         },
