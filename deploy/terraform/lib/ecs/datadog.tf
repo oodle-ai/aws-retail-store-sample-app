@@ -70,9 +70,9 @@ resource "aws_ecs_task_definition" "datadog_agent" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = "/ecs/${var.environment_name}-cluster/datadog-agent"
-          awslogs-region        = "us-west-2"
-          awslogs-stream-prefix = "ecs"
+          awslogs-group         = "retail-store-ecs-tasks"
+          awslogs-region        = "${data.aws_region.current.name}"
+          awslogs-stream-prefix = "datadog-agent-service"
         }
       }
     }
