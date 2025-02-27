@@ -35,6 +35,8 @@ module "retail_app_ecs" {
   datadog_site    = var.datadog_site
   oodle_api_key  = var.oodle_api_key
   oodle_site     = var.oodle_site
+  oodle_log_collector_host = var.oodle_log_collector_host
+  oodle_instance = var.oodle_instance
 
   environment_name          = var.environment_name
   vpc_id                    = module.vpc.inner.vpc_id

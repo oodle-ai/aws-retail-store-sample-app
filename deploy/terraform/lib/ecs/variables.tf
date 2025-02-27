@@ -123,3 +123,13 @@ variable "oodle_site" {
   description = "Oodle site"
   type        = string
 }
+
+variable "oodle_log_collector_host" {
+  description = "Oodle log collector host"
+  type        = string
+}
+
+variable "oodle_instance" {
+  description = "Oodle instance"
+  type        = string
+}
