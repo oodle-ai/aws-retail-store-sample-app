@@ -33,6 +33,10 @@ resource "aws_ecs_task_definition" "this" {
       "readonlyRootFilesystem": false,
       "environment": ${jsonencode(concat([
         {
+          "name": "ECS_ENABLE_CONTAINER_METADATA",
+          "value": "true"
+        },
+        {
           "name": "DD_API_KEY",
           "value": var.datadog_api_key
         },
@@ -51,6 +55,44 @@ resource "aws_ecs_task_definition" "this" {
         "startPeriod": 60,
         "retries": 3,
         "timeout": 5
+      },
+      "logConfiguration": {
+        "logDriver": "awsfirelens",
+        "options": {
+					"Name": "cloudwatch",
+					"region": "us-west-2",
+					"log_group_name": "${var.cloudwatch_logs_group_id}",
+					"auto_create_group": "false",
+					"log_stream_name": "${var.service_name}-service",
+					"retry_limit": "2"
+				}
+      }
+    },
+    {
+      "name": "log-router",
+      "image": "public.ecr.aws/aws-observability/aws-for-fluent-bit:stable",
+      "essential": true,
+      "memory": 200,
+      "environment": [
+        {
+          "name": "OODLE_API_KEY",
+          "value": "${var.oodle_api_key}"
+        },
+        {
+          "name": "OODLE_LOG_COLLECTOR_HOST",
+          "value": "${var.oodle_log_collector_host}"
+        },
+        {
+          "name": "OODLE_INSTANCE",
+          "value": "${var.oodle_instance}"
+        }
+      ],
+      "firelensConfiguration": {
+        "type": "fluentbit",
+        "options": {
+          "config-file-type": "s3",
+          "config-file-value": "arn:aws:s3:::${var.fluent_bit_config_bucket_name}/${var.environment_name}/${var.service_name}/fluent-bit.conf"
+        }
       },
       "logConfiguration": {
         "logDriver": "awslogs",
@@ -79,6 +121,8 @@ resource "aws_ecs_service" "this" {
   wait_for_steady_state  = true
   force_new_deployment   = true
   deployment_minimum_healthy_percent = 0
+  deployment_maximum_percent         = 200
+  health_check_grace_period_seconds  = 0
 
   dynamic "load_balancer" {
     for_each = concat(
@@ -113,6 +157,8 @@ resource "aws_lb_target_group" "internal" {
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
   target_type = "instance"
+
+  deregistration_delay = 5
 
   health_check {
     enabled             = true
@@ -173,4 +219,11 @@ resource "aws_route53_record" "internal_alb" {
   type    = "CNAME"
   ttl     = "60"
   records = [aws_lb.internal.dns_name]
+}
+
+resource "aws_s3_object" "fluent_bit_config" {
+  bucket = var.fluent_bit_config_bucket_name
+  key    = "${var.environment_name}/${var.service_name}/fluent-bit.conf"
+  source = "${path.module}/fluent-bit.conf"
+  etag   = filemd5("${path.module}/fluent-bit.conf")
 }

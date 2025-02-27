@@ -91,6 +91,16 @@ variable "oodle_site" {
   type        = string
 }
 
+variable "oodle_log_collector_host" {
+  description = "Oodle log collector host"
+  type        = string
+}
+
+variable "oodle_instance" {
+  description = "Oodle instance"
+  type        = string
+}
+
 variable "oodle_api_key" {
   description = "Oodle API key for container monitoring"
   type        = string
@@ -100,4 +110,10 @@ variable "oodle_api_key" {
 variable "route53_zone_id" {
   description = "The ID of the Route53 hosted zone where DNS records will be created"
   type        = string
+}
+
+variable "fluent_bit_config_bucket_name" {
+  description = "Name of the S3 bucket for fluent-bit configurations"
+  type        = string
+  default     = "oodle-fluent-bit-configs"
 }
