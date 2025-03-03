@@ -59,12 +59,16 @@ resource "aws_ecs_task_definition" "this" {
       "logConfiguration": {
         "logDriver": "awsfirelens",
         "options": {
-          "Name": "cloudwatch",
-          "region": "us-west-2",
-          "log_group_name": "${var.cloudwatch_logs_group_id}",
-          "auto_create_group": "false",
-          "log_stream_name": "${var.service_name}-service",
-          "retry_limit": "2"
+          "Name": "http",
+          "Host": "${var.oodle_log_collector_host}",
+          "Port": "443",
+          "URI": "/ingest/v1/logs",
+          "Header": "X-OODLE-INSTANCE-API-KEY ${var.oodle_instance}",
+          "Format": "json",
+          "Compress": "gzip",
+          "Json_date_key": "timestamp",
+          "Json_date_format": "iso8601",
+          "TLS": "On"
         }
       }
     },
