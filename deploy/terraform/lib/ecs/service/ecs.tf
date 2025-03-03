@@ -63,7 +63,7 @@ resource "aws_ecs_task_definition" "this" {
           "Host": "${var.oodle_log_collector_host}",
           "Port": "443",
           "URI": "/ingest/v1/logs",
-          "Header": "X-OODLE-INSTANCE-API-KEY ${var.oodle_instance}",
+          "Header": "X-OODLE-INSTANCE-API-KEY ${var.oodle_instance_api_key}",
           "Format": "json",
           "Compress": "gzip",
           "Json_date_key": "timestamp",
