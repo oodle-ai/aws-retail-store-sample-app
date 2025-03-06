@@ -77,34 +77,8 @@ resource "aws_ecs_task_definition" "this" {
       "image": "public.ecr.aws/aws-observability/aws-for-fluent-bit:stable",
       "essential": true,
       "memory": 200,
-      "environment": [
-        {
-          "name": "OODLE_API_KEY",
-          "value": "${var.oodle_api_key}"
-        },
-        {
-          "name": "OODLE_LOG_COLLECTOR_HOST",
-          "value": "${var.oodle_log_collector_host}"
-        },
-        {
-          "name": "OODLE_INSTANCE",
-          "value": "${var.oodle_instance}"
-        }
-      ],
       "firelensConfiguration": {
-        "type": "fluentbit",
-        "options": {
-          "config-file-type": "s3",
-          "config-file-value": "arn:aws:s3:::${var.fluent_bit_config_bucket_name}/${var.environment_name}/${var.service_name}/fluent-bit.conf"
-        }
-      },
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "${var.cloudwatch_logs_group_id}",
-          "awslogs-region": "${data.aws_region.current.name}",
-          "awslogs-stream-prefix": "${var.service_name}-service"
-        }
+        "type": "fluentbit"
       }
     }
   ]
