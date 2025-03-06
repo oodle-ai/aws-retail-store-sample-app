@@ -69,6 +69,32 @@ resource "aws_ecs_task_definition" "this" {
       }
     },
     {
+      "name": "config-init",
+      "image": "alpine:latest",
+      "essential": false,
+      "memoryReservation": 64,
+      "command": [
+        "wget",
+        "-O", "/oodle/fluent-bit.conf",
+        "https://oodle-configs.s3.us-west-2.amazonaws.com/logs/ecs/fluent-bit/fluent-bit.conf"
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "config",
+          "containerPath": "/oodle",
+          "readOnly": false
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "${var.cloudwatch_logs_group_id}",
+          "awslogs-region": "${data.aws_region.current.name}",
+          "awslogs-stream-prefix": "${var.service_name}-init"
+        }
+      }
+    },
+    {
       "name": "log-router",
       "image": "public.ecr.aws/aws-observability/aws-for-fluent-bit:stable",
       "essential": true,
@@ -87,11 +113,24 @@ resource "aws_ecs_task_definition" "this" {
           "value": "${var.oodle_instance}"
         }
       ],
+      "mountPoints": [
+        {
+          "sourceVolume": "config",
+          "containerPath": "/oodle",
+          "readOnly": true
+        }
+      ],
+      "dependsOn": [
+        {
+          "containerName": "config-init",
+          "condition": "COMPLETE"
+        }
+      ],
       "firelensConfiguration": {
         "type": "fluentbit",
         "options": {
-          "config-file-type": "s3",
-          "config-file-value": "arn:aws:s3:::${var.fluent_bit_config_bucket_name}/${var.environment_name}/${var.service_name}/fluent-bit.conf"
+          "config-file-type": "file",
+          "config-file-value": "/oodle/fluent-bit.conf"
         }
       },
       "logConfiguration": {
@@ -105,6 +144,11 @@ resource "aws_ecs_task_definition" "this" {
     }
   ]
   DEFINITION
+  
+  volume {
+    name = "config"
+  }
+
   requires_compatibilities = []
   network_mode             = "host"
   execution_role_arn       = aws_iam_role.task_execution_role.arn

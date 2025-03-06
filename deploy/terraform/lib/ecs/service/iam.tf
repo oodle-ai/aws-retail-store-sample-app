@@ -96,29 +96,3 @@ resource "aws_iam_role_policy_attachment" "task_role_firelens" {
   role       = aws_iam_role.task_role.name
   policy_arn = aws_iam_policy.firelens_cloudwatch.arn
 }
-
-resource "aws_iam_policy" "task_execution_s3_policy" {
-  name        = "${var.environment_name}-${var.service_name}-s3-config"
-  description = "Policy for accessing S3 config files"
-  policy      = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "s3:GetObject",
-          "s3:ListBucket"
-        ]
-        Resource = [
-          "arn:aws:s3:::${var.fluent_bit_config_bucket_name}",
-          "arn:aws:s3:::${var.fluent_bit_config_bucket_name}/${var.environment_name}/${var.service_name}/*"
-        ]
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "task_execution_s3_policy" {
-  role       = aws_iam_role.task_execution_role.name
-  policy_arn = aws_iam_policy.task_execution_s3_policy.arn
-}
