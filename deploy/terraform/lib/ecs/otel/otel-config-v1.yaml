@@ -1,0 +1,46 @@
+extensions:
+  health_check:
+
+receivers:
+  fluentforward/socket:
+    endpoint: unix:///var/run/fluent.sock
+  fluentforward/tcp:
+    endpoint: 0.0.0.0:24284
+
+processors:
+  batch:
+  resourcedetection/ecs:
+    detectors: [env, ecs]
+    timeout: 2s
+    override: false
+  resource/service_name:
+    attributes:
+      - key: aws.ecs.service.name
+        from_attribute: aws.ecs.task.family
+        action: insert
+
+exporters:
+  otlphttp/oodle:
+    endpoint: "https://${OODLE_ENDPOINT}/ingest/otel"
+    headers:
+      X-OODLE-INSTANCE: "${OODLE_INSTANCE}"
+      X-API-KEY: "${OODLE_API_KEY}"
+    compression: gzip
+  awscloudwatchlogs:
+    region: "${AWS_REGION}"
+    log_group_name: "${CLOUDWATCH_LOG_GROUP}"
+    log_stream_name: "${CLOUDWATCH_LOG_STREAM}"
+
+service:
+  pipelines:
+    logs:
+      receivers:
+        - fluentforward/socket
+        - fluentforward/tcp
+      processors:
+        - batch
+        - resourcedetection/ecs
+        - resource/service_name
+      exporters:
+        - otlphttp/oodle
+        - awscloudwatchlogs

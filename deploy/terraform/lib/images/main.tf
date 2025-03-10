@@ -19,4 +19,7 @@ locals {
 
   ui_default_image = "${local.default_repository}/retail-store-sample-ui:${local.default_tag}"
   ui_image         = try(var.container_image_overrides.ui, local.ui_default_image)
+
+  otel_collector_default_image = "${local.default_repository}/opentelemetry-collector-contrib:${local.default_tag}"
+  otel_collector_image         = try(var.container_image_overrides.otel_collector, local.otel_collector_default_image)
 }

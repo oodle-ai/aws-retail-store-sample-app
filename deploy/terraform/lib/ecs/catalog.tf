@@ -10,8 +10,12 @@ module "catalog_service" {
   public_subnet_ids               = var.public_subnet_ids
   tags                            = var.tags
   container_image                 = module.container_images.result.catalog.url
+  otel_collector_image            = module.container_images.result.otel_collector.url
   service_discovery_namespace_arn = aws_service_discovery_private_dns_namespace.this.arn
   cloudwatch_logs_group_id        = aws_cloudwatch_log_group.ecs_tasks.id
+  oodle_api_key                   = var.oodle_api_key
+  oodle_endpoint                  = var.oodle_endpoint
+  oodle_instance                  = var.oodle_instance
 
   environment_variables = {
     DB_NAME = var.catalog_db_name
