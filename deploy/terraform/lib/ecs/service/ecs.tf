@@ -11,6 +11,7 @@ locals {
 }
 
 data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
 
 resource "aws_ecs_task_definition" "this" {
   family                   = "${var.environment_name}-${var.service_name}"
@@ -42,12 +43,47 @@ resource "aws_ecs_task_definition" "this" {
         "timeout": 5
       },
       "logConfiguration": {
+        "logDriver": "awsfirelens"
+      }
+    },
+    {
+      "name": "otel-collector",
+      "image": "${var.otel_collector_image}",
+      "essential": true,
+      "memory": 200,
+      "environment": [
+        {
+          "name": "OODLE_API_KEY",
+          "value": "${var.oodle_api_key}"
+        },
+        {
+          "name": "OODLE_ENDPOINT",
+          "value": "${var.oodle_endpoint}"
+        },
+        {
+          "name": "OODLE_INSTANCE",
+          "value": "${var.oodle_instance}"
+        },
+        {
+          "name": "CLOUDWATCH_LOG_GROUP",
+          "value": "${var.cloudwatch_logs_group_id}"
+        },
+        {
+          "name": "CLOUDWATCH_LOG_STREAM",
+          "value": "${var.service_name}-application"
+        }
+      ],
+      "command": ["--config", "https://oodle-configs.s3.us-west-2.amazonaws.com/logs/ecs/otel/otel-config-v1.yaml"],
+      "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "${var.cloudwatch_logs_group_id}",
           "awslogs-region": "${data.aws_region.current.name}",
-          "awslogs-stream-prefix": "${var.service_name}-service"
+          "awslogs-stream-prefix": "${var.service_name}-otel"
         }
+      },
+      "firelensConfiguration": {
+        "type": "fluentbit"
       }
     }
   ]
@@ -97,4 +133,24 @@ resource "aws_ecs_service" "this" {
       container_port   = 8080
     }
   }
+}
+
+resource "aws_iam_role_policy" "task_role_cloudwatch_logs" {
+  name = "${var.environment_name}-${var.service_name}-task-cloudwatch-logs"
+  role = aws_iam_role.task_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:PutLogEvents",
+          "logs:CreateLogStream",
+          "logs:CreateLogGroup"
+        ]
+        Resource = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${var.cloudwatch_logs_group_id}:*"
+      }
+    ]
+  })
 }

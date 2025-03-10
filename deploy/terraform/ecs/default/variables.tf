@@ -8,3 +8,15 @@ variable "container_image_overrides" {
   default     = {}
   description = "Container image override object"
 }
+
+variable "oodle_api_key" {
+  type = string
+}
+
+variable "oodle_endpoint" {
+  type = string
+}
+
+variable "oodle_instance" {
+  type = string
+}

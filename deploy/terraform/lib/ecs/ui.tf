@@ -10,10 +10,14 @@ module "ui_service" {
   public_subnet_ids               = var.public_subnet_ids
   tags                            = var.tags
   container_image                 = module.container_images.result.ui.url
+  otel_collector_image            = module.container_images.result.otel_collector.url
   service_discovery_namespace_arn = aws_service_discovery_private_dns_namespace.this.arn
   cloudwatch_logs_group_id        = aws_cloudwatch_log_group.ecs_tasks.id
   healthcheck_path                = "/actuator/health"
   alb_target_group_arn            = element(module.alb.target_group_arns, 0)
+  oodle_api_key                   = var.oodle_api_key
+  oodle_endpoint                  = var.oodle_endpoint
+  oodle_instance                  = var.oodle_instance
 
   environment_variables = {
     ENDPOINTS_CATALOG  = "http://${module.catalog_service.ecs_service_name}"

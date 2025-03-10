@@ -100,3 +100,15 @@ variable "mq_username" {
 variable "mq_password" {
   type = string
 }
+
+variable "oodle_api_key" {
+  type = string
+}
+
+variable "oodle_endpoint" {
+  type = string
+}
+
+variable "oodle_instance" {
+  type = string
+}

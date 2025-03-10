@@ -18,5 +18,8 @@ output "result" {
     ui = merge({
       url = local.ui_image
     }, zipmap(["repository", "tag"], split(":", local.ui_image)))
+    otel_collector = merge({
+      url = local.otel_collector_image
+    }, zipmap(["repository", "tag"], split(":", local.otel_collector_image)))
   }
 }

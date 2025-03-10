@@ -59,4 +59,8 @@ module "retail_app_ecs" {
   mq_endpoint = module.dependencies.mq_broker_endpoint
   mq_username = module.dependencies.mq_user
   mq_password = module.dependencies.mq_password
+
+  oodle_api_key                   = var.oodle_api_key
+  oodle_endpoint                  = var.oodle_endpoint
+  oodle_instance                  = var.oodle_instance
 }

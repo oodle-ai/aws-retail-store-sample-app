@@ -40,6 +40,10 @@ variable "container_image" {
   description = "Container image for the service"
 }
 
+variable "otel_collector_image" {
+  description = "Container image for the otel collector"
+}
+
 variable "service_discovery_namespace_arn" {
   description = "ARN of the service discovery namespace for Service Connect"
 }
@@ -76,4 +80,16 @@ variable "cloudwatch_logs_group_id" {
 variable "alb_target_group_arn" {
   description = "ARN of the ALB target group the ECS service should register tasks to"
   default     = ""
+}
+
+variable "oodle_api_key" {
+  description = "Oodle API key"
+}
+
+variable "oodle_endpoint" {
+  description = "Oodle log collector host"
+}
+
+variable "oodle_instance" {
+  description = "Oodle instance"
 }
