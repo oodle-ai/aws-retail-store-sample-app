@@ -18,6 +18,8 @@ processors:
       - key: aws.ecs.service.name
         from_attribute: aws.ecs.task.family
         action: insert
+      - key: aws.ecs.task.family
+        action: delete
 
 exporters:
   otlphttp/oodle:

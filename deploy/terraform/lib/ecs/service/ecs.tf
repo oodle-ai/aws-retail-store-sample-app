@@ -70,7 +70,7 @@ resource "aws_ecs_task_definition" "this" {
         },
         {
           "name": "CLOUDWATCH_LOG_STREAM",
-          "value": "${var.service_name}-application"
+          "value": "${var.service_name}-service"
         }
       ],
       "command": ["--config", "https://oodle-configs.s3.us-west-2.amazonaws.com/logs/ecs/otel/otel-config-v1.yaml"],
@@ -79,7 +79,7 @@ resource "aws_ecs_task_definition" "this" {
         "options": {
           "awslogs-group": "${var.cloudwatch_logs_group_id}",
           "awslogs-region": "${data.aws_region.current.name}",
-          "awslogs-stream-prefix": "${var.service_name}-otel"
+          "awslogs-stream-prefix": "${var.service_name}-service"
         }
       },
       "firelensConfiguration": {
