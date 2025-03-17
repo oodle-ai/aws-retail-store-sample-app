@@ -96,7 +96,7 @@ resource "aws_ecs_task_definition" "this" {
     },
     {
       "name": "log-router",
-      "image": "public.ecr.aws/aws-observability/aws-for-fluent-bit:init-latest",
+      "image": "public.ecr.aws/aws-observability/aws-for-fluent-bit:init-2.32.5.20250305",
       "essential": true,
       "memory": 200,
       "environment": [
