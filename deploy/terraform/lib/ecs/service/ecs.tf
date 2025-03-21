@@ -59,24 +59,24 @@ resource "aws_ecs_task_definition" "this" {
       "logConfiguration": {
         "logDriver": "awsfirelens",
         "options": {
-          "Name": "cloudwatch",
+          "Name": "cloudwatch_logs",
           "region": "us-west-2",
           "log_group_name": "${var.cloudwatch_logs_group_id}",
           "auto_create_group": "false",
-          "log_stream_name": "${var.service_name}-service",
+          "log_stream_name": "${var.service_name}-service/application/$${ECS_TASK_ID}",
           "retry_limit": "2"
         }
       }
     },
     {
       "name": "config-init",
-      "image": "alpine:latest",
+      "image": "public.ecr.aws/docker/library/alpine:latest",
       "essential": false,
       "memoryReservation": 64,
       "command": [
-        "wget",
-        "-O", "/oodle/fluent-bit.conf",
-        "https://oodle-configs.s3.us-west-2.amazonaws.com/logs/ecs/fluent-bit/fluent-bit.conf"
+        "sh",
+        "-c",
+        "apk add --no-cache ca-certificates wget && wget -O /oodle/fluent-bit.conf https://oodle-configs.s3.us-west-2.amazonaws.com/logs/ecs/fluent-bit/fluent-bit.conf"
       ],
       "mountPoints": [
         {
@@ -90,13 +90,13 @@ resource "aws_ecs_task_definition" "this" {
         "options": {
           "awslogs-group": "${var.cloudwatch_logs_group_id}",
           "awslogs-region": "${data.aws_region.current.name}",
-          "awslogs-stream-prefix": "${var.service_name}-init"
+          "awslogs-stream-prefix": "${var.service_name}-service"
         }
       }
     },
     {
       "name": "log-router",
-      "image": "public.ecr.aws/aws-observability/aws-for-fluent-bit:stable",
+      "image": "public.ecr.aws/aws-observability/aws-for-fluent-bit:init-2.32.5.20250305",
       "essential": true,
       "memory": 200,
       "environment": [
@@ -105,7 +105,7 @@ resource "aws_ecs_task_definition" "this" {
           "value": "${var.oodle_api_key}"
         },
         {
-          "name": "OODLE_LOG_COLLECTOR_HOST",
+          "name": "OODLE_ENDPOINT",
           "value": "${var.oodle_log_collector_host}"
         },
         {

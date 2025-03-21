@@ -83,10 +83,7 @@ resource "aws_iam_policy" "firelens_cloudwatch" {
           "logs:PutLogEvents",
           "logs:DescribeLogStreams"
         ]
-        Resource = [
-          "arn:aws:logs:*:*:log-group:retail-store-ecs-tasks:*",
-          "arn:aws:logs:*:*:log-group:retail-store-ecs-tasks:log-stream:*"
-        ]
+        Resource = "*"
       }
     ]
   })
